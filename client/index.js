@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded',async ()=>{
     const logoutButton=document.querySelector('.logout');
     const HOST="/http://localhost:4000";
     const storage=sessionStorage.userinfo ? JSON.parse(sessionStorage.userinfo):{};
+    logoutButton.addEventListener('click',()=>{
+        list.innerHTML='';
+        delete sessionStorage.userinfo;
+    })
     form.addEventListener('submit',async (event)=>{
         event.preventDefault();
     const body= new FormData(form);
