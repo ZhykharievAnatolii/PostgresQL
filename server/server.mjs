@@ -81,8 +81,77 @@ server.post('/login',{schema:authSchema}, async (request,reply)=>{
     reply.status(400).send({
         info:'user does not exist'
     })
+
+    server.get('/tasks',{
+        schema:{
+            headers:{
+                type:'object',
+                properties:{
+                    token:{
+                        type:'string'
+                    }
+                },
+                required: ['token'],
+            }
+        }
+    },async (request,reply)=>{
+    const payload=await verifyRequest(request);
+    if(payload){
+       const{id}=payload;
+       const{rows:tasks}=await client.query('SELECT * FROM tasks WHERE userid=$1',[id]);
+       reply.send(tasks);
+    }
+    return reply.status(401).send('You are not autorized')
+    });
+
+    server.post('/tasks',{
+        schema:{
+            headers:{
+                type:'object',
+                properties:{
+                    token:{
+                        type:'string'
+                    }
+                },
+                required: ['token'],
+            },
+            body:{
+                type:'object',
+                properties:{
+                    name:{
+                        type:'string',
+                    },
+                    deadline:{
+                        type:'string'
+                    },
+                },
+                required:['name', 'deadline']
+            },
+        },
+    },async (request,reply)=>{
+        const payload=await verifyRequest(request);
+        const {name, deadline}=request.body
+        if(payload){
+        await client.query('INSERT INTO tasks(name,deadline) VALUES($1,$2,$3);',[name,deadline,payload.id]);
+        reply.send({info:'created'})
+        }
+        reply.status(401).send('unauthoraised')
+    })
+
+    async function verifyRequest(request) {
+        const{token}=request.headers;
+
+        try {
+            const payload=await verify(token,SECRET_KEY);
+            return payload;
+        }catch (err){
+            return false;
+        }
+    }
+
+
     server.post('/verify',async (request,reply)=>{
-        const{token}=request.headers
+        const{token}=request.headers;
         try {
             const payload=await verify(token,SECRET_KEY);
             reply.send(payload);
@@ -103,4 +172,6 @@ server.listen({
 
 // const hash=btoa('hi all');
 // atob(hash);
+
+
 
