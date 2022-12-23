@@ -1,0 +1,28 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "about databases",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.mjs"
+  },
+  "keywords": [
+    "data",
+    "base"
+  ],
+  "author": "zhykharievanatolii",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cors": "^8.2.0",
+    "@fastify/multipart": "^7.3.0",
+    "bcrypt": "^5.1.0",
+    "fastify": "^4.10.2",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.1"
+  }
+}
